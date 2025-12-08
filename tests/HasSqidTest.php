@@ -102,3 +102,19 @@ it('can handle custom sqids connection for model', function ()
 
     $this->assertEquals('bdcdecabad', (new ItemWithCustomSqidsConnection)->idToSqid(1));
 });
+
+it('allows for strict sqid to ID conversion', function ()
+{
+    $item = ItemWithCustomSqidsConnection::factory()->create();
+
+    $this->assertEquals('bdcdecabad', $item->sqid());
+
+    $this->assertTrue(ItemwithCustomSqidsConnection::findBySqid('bdcdecabad')->is($item));
+    $this->assertTrue(ItemwithCustomSqidsConnection::findBySqid('bd')->is($item));
+
+    ItemWithCustomSqidsConnection::setStrictSqids();
+
+    $this->assertTrue(ItemwithCustomSqidsConnection::findBySqid('bdcdecabad')->is($item));
+    $this->assertNull(ItemwithCustomSqidsConnection::findBySqid('bd'));
+
+});
